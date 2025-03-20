@@ -1,8 +1,6 @@
 
 package JuegoDeLaVida;
 
-import java.util.Arrays;
-
 /**
  * [][]celulas (matriz de posiciones)
  * crearGeneracionAleatoria()
@@ -18,10 +16,12 @@ public class Generacion {
     private int generacionesViva;
     private int fila;
     private int columna;
-
-    public Generacion(int fila, int columna) {
-        this.celulas = new int[fila][columna];
-        this.generacionesViva = 0; // o 1?
+    
+    public Generacion(int[][] celulas, int generacionesViva, int fila, int columna) {
+        this.celulas = celulas;
+        this.generacionesViva = generacionesViva;
+        this.fila = fila;
+        this.columna = columna;
     }
 
     public int[][] getCelulas() {
@@ -40,9 +40,33 @@ public class Generacion {
         this.generacionesViva = generacionesViva;
     }
 
+    public int getFila() {
+        return fila;
+    }
+
+    public void setFila(int fila) {
+        this.fila = fila;
+    }
+
+    public int getColumna() {
+        return columna;
+    }
+
+    public void setColumna(int columna) {
+        this.columna = columna;
+    }
+
     @Override
     public String toString() {
-        return "Generacion [celulas=" + Arrays.toString(celulas)
-                + ", generacionesViva=" + generacionesViva + "]";
+        StringBuilder sb = new StringBuilder();
+        sb.append("Generacion{");
+        sb.append("celulas=").append(celulas);
+        sb.append(", generacionesViva=").append(generacionesViva);
+        sb.append(", fila=").append(fila);
+        sb.append(", columna=").append(columna);
+        sb.append('}');
+        return sb.toString();
     }
+
+    
 }
