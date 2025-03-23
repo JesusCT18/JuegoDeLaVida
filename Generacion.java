@@ -161,7 +161,7 @@ public class Generacion {
                                 .parseInt(JOptionPane.showInputDialog("Ingrese el tamaño de la matriz(máx 25): "));
                         if (n > 25) {
                             JOptionPane.showMessageDialog(null, "El tamaño de la matriz no puede ser mayor a 25");
-                            continue;
+                            break;
                         }
                         int[][] matrizManual = creaMatriz(n);
                         mostrarMatriz(matrizManual);
@@ -209,14 +209,14 @@ public class Generacion {
                                 JOptionPane.showInputDialog("Introduce el porcentaje de celulas vivas (0-100): "));
                         if (porcentaje < 0 || porcentaje > 100) {
                             JOptionPane.showMessageDialog(null, "Porcentaje fuera de rango. Intente nuevamente.");
-                            continue;
+                            break;
                         }
                         // Crear matriz aleatoria
                         int n = Integer
                                 .parseInt(JOptionPane.showInputDialog("Ingrese el tamaño de la matriz (máx 25): "));
                         if (n > 25) {
                             JOptionPane.showMessageDialog(null, "El tamaño de la matriz no puede ser mayor a 25");
-                            continue;
+                            break;
                         }
                         // Calcular el número de celulas vivas
                         int numCelulasVivas = (n * n * porcentaje) / 100;
@@ -245,4 +245,58 @@ public class Generacion {
             JOptionPane.showMessageDialog(null, "Dato introducido no correcto, vuelva a intentarlo.");
         }
     }
+
+    // SIN TERMINAR- Hay que implementar los algoritmos de la vida e insertarlos en el código del menu.
+    
+    // Crear una nueva generacion
+    public static int[][] nuevaGeneracion(int[][] celulas) {
+        int[][] nuevaGeneracion = new int[celulas.length][celulas[0].length];
+        for (int i = 0; i < celulas.length; i++) {
+            for (int j = 0; j < celulas[i].length; j++) {
+                nuevaGeneracion[i][j] = celulas[i][j];
+            }
+        }
+        return nuevaGeneracion;
+    }
+
+    // Contar las celulas vivas alrededor de una celula
+    public static int contarCelulasVivas(int[][] celulas, int fila, int columna) {
+        int contador = 0;
+        for (int i = fila - 1; i <= fila + 1; i++) {
+            for (int j = columna - 1; j <= columna + 1; j++) {
+                // Verificar que la celula no sea la misma
+                if (i == fila && j == columna) {
+                    continue;
+                }
+                // Verificar que la celula este dentro de los limites de la matriz y este viva
+                if (i >= 0 && i < celulas.length && j >= 0 && j < celulas[i].length) {
+                    if (celulas[i][j] == 1) {
+                        contador++;
+                    }
+                }
+            }
+        }
+        return contador;
+    }
+
+    //Registro de celulas vivas, muertas en esta generacion
+    public static void registroCelulas(int[][] celulas) {
+        int celulasVivas = 0;
+        int celulasMuertas = 0;
+        for (int i = 0; i < celulas.length; i++) {
+            for (int j = 0; j < celulas[i].length; j++) {
+                if (celulas[i][j] == 1) {
+                    celulasVivas++;
+                } else {
+                    celulasMuertas++;
+                }
+            }
+        }
+        JOptionPane.showMessageDialog(null,
+                "Celulas vivas: " + celulasVivas + "\n" + "Celulas muertas: " + celulasMuertas);
+    }
+
+
+
+
 }
