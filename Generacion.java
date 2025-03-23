@@ -217,7 +217,12 @@ public class Generacion {
                             continue;
                         }
                         // Crear matriz aleatoria
-                        int n = Integer.parseInt(JOptionPane.showInputDialog("Ingrese el tamaño de la matriz (máx 25): "));
+                        int n = Integer
+                                .parseInt(JOptionPane.showInputDialog("Ingrese el tamaño de la matriz (máx 25): "));
+                        if (n > 25) {
+                            JOptionPane.showMessageDialog(null, "El tamaño de la matriz no puede ser mayor a 25");
+                            continue;
+                        }
                         // Calcular el número de celulas vivas
                         int numCelulasVivas = (n * n * porcentaje) / 100;
                         // Crear matriz
