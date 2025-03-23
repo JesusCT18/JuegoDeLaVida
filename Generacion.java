@@ -6,13 +6,8 @@ import java.util.Random;
 import javax.swing.JOptionPane;
 
 /**
- * [][]celulas (matriz de posiciones)
- * crearGeneracionAleatoria()
- * crearGeneracion%()
- * mostrarMatriz()
- * mostrarRegistro
- * mostrarMenu
- * generacionesViva
+
+
  */
 public class Generacion {
 
@@ -245,7 +240,7 @@ public class Generacion {
 
                     default -> JOptionPane.showMessageDialog(null, "Opción no válida");
                 }
-            } while (opcion != "3");
+            } while (!opcion.equals("3"));
         } catch (NumberFormatException nfe) {
             JOptionPane.showMessageDialog(null, "Dato introducido no correcto, vuelva a intentarlo.");
         }
