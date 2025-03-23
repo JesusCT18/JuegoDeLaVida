@@ -212,13 +212,12 @@ public class Generacion {
                             break;
                         }
                         // Crear matriz aleatoria
-                        int n = Integer
-                                .parseInt(JOptionPane.showInputDialog("Ingrese el tamaño de la matriz (máx 25): "));
+                        int n = Integer.parseInt(JOptionPane.showInputDialog("Ingrese el tamaño de la matriz (máx 25): "));
                         if (n > 25) {
                             JOptionPane.showMessageDialog(null, "El tamaño de la matriz no puede ser mayor a 25");
                             break;
                         }
-                        // Calcular el número de celulas vivas
+                        // Calcular el número de celulas vivas. Lado por lado para saber el total.
                         int numCelulasVivas = (n * n * porcentaje) / 100;
                         // Crear matriz
                         int[][] matrizAleatoria = new int[n][n];
@@ -247,7 +246,7 @@ public class Generacion {
     }
 
     // SIN TERMINAR- Hay que implementar los algoritmos de la vida e insertarlos en el código del menu.
-    
+
     // Crear una nueva generacion
     public static int[][] nuevaGeneracion(int[][] celulas) {
         int[][] nuevaGeneracion = new int[celulas.length][celulas[0].length];
