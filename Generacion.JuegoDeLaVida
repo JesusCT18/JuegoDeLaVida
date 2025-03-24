@@ -2,7 +2,7 @@
 package JuegoDeLaVida;
 
 import java.util.Random;
-
+import java.util.ArrayList;
 import javax.swing.JOptionPane;
 
 /**
@@ -11,23 +11,25 @@ import javax.swing.JOptionPane;
  */
 public class Generacion {
 
-    private int[][] celulas;
+    private Celula[][] celulas;
     private int generacionesViva;
     private int fila;
     private int columna;
 
-    public Generacion(int[][] celulas, int generacionesViva, int fila, int columna) {
+    private static ArrayList<String> registroGeneraciones = new ArrayList<>();
+
+    public Generacion(Celula[][] celulas, int generacionesViva, int fila, int columna) {
         this.celulas = celulas;
         this.generacionesViva = generacionesViva;
         this.fila = fila;
         this.columna = columna;
     }
 
-    public int[][] getCelulas() {
+    public Celula[][] getCelulas() {
         return celulas;
     }
 
-    public void setCelulas(int[][] celulas) {
+    public void setCelulas(Celula[][] celulas) {
         this.celulas = celulas;
     }
 
@@ -69,30 +71,30 @@ public class Generacion {
 
     /* INICIO DE METODOS */
     // Crea una matriz de n x n (máx 25) con valores aleatorios entre 0 y 1
-    public static int[][] creaMatriz(int n) {
+    public static Celula[][] creaMatriz(int n) {
         if (n > 25) {
             JOptionPane.showMessageDialog(null, "El tamaño de la matriz no puede ser mayor a 25");
             return null;
         }
         Random r = new Random();
-        int[][] matriz = new int[n][n];
+        Celula[][] matriz = new Celula[n][n];
 
         for (int i = 0; i < matriz.length; i++) {
             for (int j = 0; j < matriz[i].length; j++) {
-                matriz[i][j] = r.nextInt(0, 2);// 0 o 1
+                matriz[i][j] = new Celula(r.nextInt(0, 2) == 1);// 0 o 1
             }
         }
         return matriz;
     }
 
     // Muestra la matriz
-    public static void mostrarMatriz(int[][] matriz) {
+    public static void mostrarMatriz(Celula[][] matriz) {
         for (int i = 0; i < matriz.length; i++) {
             for (int j = 0; j < matriz[i].length; j++) {
-                System.out.print(matriz[i][j] + " ");
+                System.out.print(matriz[i][j].isViva() ? "1 " : "0 ");
 
             }
-            System.out.println("");
+            System.out.println();
         }
     }
 
@@ -157,87 +159,33 @@ public class Generacion {
                 switch (opcion) {
                     // Colocacion manual
                     case "1" -> {
-                        int n = Integer
-                                .parseInt(JOptionPane.showInputDialog("Ingrese el tamaño de la matriz(máx 25): "));
+                        int n = Integer.parseInt(JOptionPane.showInputDialog("Ingrese el tamaño de la matriz(máx 25): "));
                         if (n > 25) {
                             JOptionPane.showMessageDialog(null, "El tamaño de la matriz no puede ser mayor a 25");
                             break;
                         }
-                        int[][] matrizManual = creaMatriz(n);
+                        Celula[][] matrizManual = creaMatriz(n);
                         mostrarMatriz(matrizManual);
-                        // Menu para colocacion manual, repite para nueva colocacion o volver al menu
-                        // anterior
-                        try {
-                            do {
-                                submenu = JOptionPane.showInputDialog("""
-                                        1. Colocar una celula
-                                        2. Volver al menu anterior
-                                        """);
-                                switch (submenu) {
-                                    case "1" -> {
-                                        // Solicitar fila y columna para colocar la celula
-                                        fila = Integer.parseInt(JOptionPane
-                                                .showInputDialog(
-                                                        "Introduce la fila donde quieres colocar la celula: "));
-                                        columna = Integer.parseInt(JOptionPane
-                                                .showInputDialog(
-                                                        "Introduce la columna donde quieres colocar la celula: "));
-                                        if (fila < 0 || fila >= n || columna < 0 || columna >= n) {
-                                            JOptionPane.showMessageDialog(null,
-                                                    "Coordenadas fuera de rango. Intente nuevamente.");
-                                        } else {
-                                            matrizManual[fila][columna] = 1; // Coloca una celula viva
-                                            JOptionPane.showMessageDialog(null,
-                                                    "Celula colocada en la posicion: (" + fila + ", " + columna + ")");
-                                        }
-
-                                    }
-
-                                    case "2" -> {
-                                    }
-                                }
-
-                            } while (!submenu.equals("2"));
-                        } catch (NumberFormatException nfe) {
-                            JOptionPane.showMessageDialog(null, "Dato introducido no correcto, vuelva a intentarlo.");
-                        }
+                        colocacionManual(matrizManual);
+                        registroCelulas(matrizManual);
                     }
                     // Colocacion aleatoria
                     case "2" -> {
-                        // Solicitar porcentaje de celulas vivas
-                        int porcentaje = Integer.parseInt(
-                                JOptionPane.showInputDialog("Introduce el porcentaje de celulas vivas (0-100): "));
-                        if (porcentaje < 0 || porcentaje > 100) {
-                            JOptionPane.showMessageDialog(null, "Porcentaje fuera de rango. Intente nuevamente.");
-                            break;
-                        }
-                        // Crear matriz aleatoria
-                        int n = Integer.parseInt(JOptionPane.showInputDialog("Ingrese el tamaño de la matriz (máx 25): "));
+                        int n = Integer.parseInt(JOptionPane.showInputDialog("Ingrese el tamaño de la matriz(máx 25): "));
                         if (n > 25) {
                             JOptionPane.showMessageDialog(null, "El tamaño de la matriz no puede ser mayor a 25");
                             break;
                         }
-                        // Calcular el número de celulas vivas. Lado por lado para saber el total.
-                        int numCelulasVivas = (n * n * porcentaje) / 100;
-                        // Crear matriz
-                        int[][] matrizAleatoria = new int[n][n];
-                        Random r = new Random();
-                        for (int i = 0; i < numCelulasVivas; i++) {
-                            int filaAleatoria = r.nextInt(n);
-                            int columnaAleatoria = r.nextInt(n);
-                            // Verificar si la celula ya está viva
-                            while (matrizAleatoria[filaAleatoria][columnaAleatoria] == 1) {
-                                filaAleatoria = r.nextInt(n);
-                                columnaAleatoria = r.nextInt(n);
-                            }
-
-                            mostrarMatriz(matrizAleatoria);
-                        }
+                        Celula[][] matrizAleatoria = creaMatriz(n);
+                        mostrarMatriz(matrizAleatoria);
+                        registroCelulas(matrizAleatoria);
                     }
-                    // Volver al menu anterior
+                    
                     case "3" -> mostrarMenu();
 
-                    default -> JOptionPane.showMessageDialog(null, "Opción no válida");
+                    if (opcion.equal("3")){
+                        menuGeneraciones();
+                    }
                 }
             } while (!opcion.equals("3"));
         } catch (NumberFormatException nfe) {
@@ -248,18 +196,25 @@ public class Generacion {
     // SIN TERMINAR- Hay que implementar los algoritmos de la vida e insertarlos en el código del menu.
 
     // Crear una nueva generacion
-    public static int[][] nuevaGeneracion(int[][] celulas) {
-        int[][] nuevaGeneracion = new int[celulas.length][celulas[0].length];
-        for (int i = 0; i < celulas.length; i++) {
-            for (int j = 0; j < celulas[i].length; j++) {
-                nuevaGeneracion[i][j] = celulas[i][j];
+    public static Celula[][] nuevaGeneracion(Celula[][] celulas) {
+        int n = celulas.length;
+        Celula[][] nuevaGeneracion = new Celula[n][n];
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                int vivasAlrededor = contarCelulasVivas(celulas, i, j);
+
+                if (celulas[i][j].isViva()){
+                    nuevaGeneracion[i][j] = new Celula(vivasAlrededor == 2 || vivasAlrededor == 3);
+                } else {
+                    nuevaGeneracion[i][j] = new Celula(vivasAlrededor == 3);
+                }
             }
         }
         return nuevaGeneracion;
     }
 
     // Contar las celulas vivas alrededor de una celula
-    public static int contarCelulasVivas(int[][] celulas, int fila, int columna) {
+    public static int contarCelulasVivas(Celula[][] celulas, int fila, int columna) {
         int contador = 0;
         for (int i = fila - 1; i <= fila + 1; i++) {
             for (int j = columna - 1; j <= columna + 1; j++) {
@@ -269,7 +224,7 @@ public class Generacion {
                 }
                 // Verificar que la celula este dentro de los limites de la matriz y este viva
                 if (i >= 0 && i < celulas.length && j >= 0 && j < celulas[i].length) {
-                    if (celulas[i][j] == 1) {
+                    if (celulas[i][j].isViva()) {
                         contador++;
                     }
                 }
@@ -279,12 +234,12 @@ public class Generacion {
     }
 
     //Registro de celulas vivas, muertas en esta generacion
-    public static void registroCelulas(int[][] celulas) {
+    public static void registroCelulas(Celula[][] celulas) {
         int celulasVivas = 0;
         int celulasMuertas = 0;
         for (int i = 0; i < celulas.length; i++) {
             for (int j = 0; j < celulas[i].length; j++) {
-                if (celulas[i][j] == 1) {
+                if (celulas[i][j].isViva()) {
                     celulasVivas++;
                 } else {
                     celulasMuertas++;
@@ -293,9 +248,51 @@ public class Generacion {
         }
         JOptionPane.showMessageDialog(null,
                 "Celulas vivas: " + celulasVivas + "\n" + "Celulas muertas: " + celulasMuertas);
+        registroGeneraciones.add("Generacion: Vivas: " + celulasVivas + ", Muertas: " + celulasMuertas);
     }
 
+    public static void menuGeneraciones() {
+        int opcion;
+        try {
+            do {
+    
+                String menu = """
+                        MENÚ DE JUEGO - Avanzar Generación y Mostrar Registros
+                          1. Avanzar a la siguiente generación
+                          2. Mostrar registros de células vivas y muertas
+                          3. Guardar partida (por ahora no implementado)
+                          4. Salir
+                        Elige una opción:
+                             """;
+    
+                opcion = Integer.parseInt(JOptionPane.showInputDialog(menu));
 
+                switch (opcion) {
+                    case 1 -> {
+                        celulas = nuevaGeneracion(celulas);
+                        mostrarMatriz(celulas);
+                        registroCelulas(celulas);
+                    }
+                    case 2 -> {
+                        if (registroGeneraciones.isEmpty()){
+                            JOptionPane.showMessageDialog(null,"Aún no se ha anvanzado ninguna generación");
+                        } else {
+                            StringBuilder sb = new StringBuilder();
+                            for (String registro : registroGeneraciones){
+                                sb.append(registro).append("\n");
+                            }
+                            JOptionPane.showMessageDialog(null, sb.toString());
+                        }
+                    }
+                    case 3 -> JOptionPane.showMessageDialog(null, "Funcionalidad no implementada aún.");
+                    case 4 -> JOptionPane.showMessageDialog(null, "Gracias! Hasta pronto! ");
+                    default -> JOptionPane.showMessageDialog(null, "Opción no válida.");
+                    }
 
+                } while (opcion != 4);
+            } catch (NumberFormatException nfe) {
+                JOptionPane.showMessageDialog(null, "Dato no valido");
+              } 
+    }
 
 }

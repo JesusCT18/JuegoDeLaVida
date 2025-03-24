@@ -23,7 +23,7 @@ public class Celula {
 
     @Override
     public String toString() {
-        return "Celula [viva=" + viva + ", isViva()=" + isViva() + "]";
+        return viva ? "1" : "0";
     }
 
 
