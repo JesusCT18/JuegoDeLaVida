@@ -18,6 +18,8 @@ public class Generacion {
 
     private static ArrayList<String> registroGeneraciones = new ArrayList<>();
 
+    private static int contadorGeneraciones = 0;
+
     public Generacion(Celula[][] celulas, int generacionesViva, int fila, int columna) {
         this.celulas = celulas;
         this.generacionesViva = generacionesViva;
@@ -79,9 +81,21 @@ public class Generacion {
         Random r = new Random();
         Celula[][] matriz = new Celula[n][n];
 
+        int cantidadCelulasVivas = (n * n * porcentajeVivas) / 100;
+
         for (int i = 0; i < matriz.length; i++) {
             for (int j = 0; j < matriz[i].length; j++) {
-                matriz[i][j] = new Celula(r.nextInt(0, 2) == 1);// 0 o 1
+                matriz[i][j] = new Celula(false); // Las celulas se inicializan como muertas
+            }
+        }
+
+        // Colocar las celulas vivas segun el porcentaje
+        while (cantidadCelulasVivas > 0){
+            int i = r.nextInt(n);
+            int j = r.nextInt(n);
+            if (!matriz[i][j].isViva()){
+                matriz[i][j] = new Celula(true);
+                cantidadCelulasVivas--; // evita bucles infinitos
             }
         }
         return matriz;
@@ -145,9 +159,6 @@ public class Generacion {
     // anterior)
     public static void iniciarJuego() {
         String opcion = "";
-        int fila = 0;
-        int columna = 0;
-        String submenu = "";
         try {
             do {
                 opcion = JOptionPane.showInputDialog("""
@@ -168,22 +179,25 @@ public class Generacion {
                         mostrarMatriz(matrizManual);
                         colocacionManual(matrizManual);
                         registroCelulas(matrizManual);
+                        menuGeneraciones();
                     }
                     // Colocacion aleatoria
                     case "2" -> {
                         int n = Integer.parseInt(JOptionPane.showInputDialog("Ingrese el tamaño de la matriz(máx 25): "));
-                        if (n > 25) {
-                            JOptionPane.showMessageDialog(null, "El tamaño de la matriz no puede ser mayor a 25");
+                        int porcentaje = Integer.parseInt(JOptionPane.showInputDialog("Ingrese el porcentaje de celulas vivas (0-100): "));
+                        if (n > 25 || porcentaje < 0 || porcentaje > 100) {
+                            JOptionPane.showMessageDialog(null, "Dato no valido");
                             break;
                         }
-                        Celula[][] matrizAleatoria = creaMatriz(n);
+                        Celula[][] matrizAleatoria = creaMatriz(n, porcentaje);
                         mostrarMatriz(matrizAleatoria);
                         registroCelulas(matrizAleatoria);
+                        menuGeneraciones();
                     }
                     
                     case "3" -> mostrarMenu();
 
-                    if (opcion.equal("3")){
+                    if (!opcion.equals("3")){
                         menuGeneraciones();
                     }
                 }
@@ -249,6 +263,7 @@ public class Generacion {
         JOptionPane.showMessageDialog(null,
                 "Celulas vivas: " + celulasVivas + "\n" + "Celulas muertas: " + celulasMuertas);
         registroGeneraciones.add("Generacion: Vivas: " + celulasVivas + ", Muertas: " + celulasMuertas);
+        contadorGeneraciones++;
     }
 
     public static void menuGeneraciones() {
@@ -275,7 +290,7 @@ public class Generacion {
                     }
                     case 2 -> {
                         if (registroGeneraciones.isEmpty()){
-                            JOptionPane.showMessageDialog(null,"Aún no se ha anvanzado ninguna generación");
+                            JOptionPane.showMessageDialog(null, "Aún no se ha anvanzado ninguna generación");
                         } else {
                             StringBuilder sb = new StringBuilder();
                             for (String registro : registroGeneraciones){
