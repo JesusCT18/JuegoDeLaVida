@@ -64,8 +64,7 @@ public class Main {
                             JOptionPane.showMessageDialog(null, "El tamaño de la matriz no puede ser mayor a 25");
                             break;
                         }
-                        int porcentaje = Integer.parseInt(JOptionPane.showInputDialog("Ingrese el porcentaje de celulas vivas (0-100): "));
-                        Celula[][] matrizManual = Generacion.creaMatriz(n, porcentaje);
+                        Celula[][] matrizManual = Generacion.colocacionManual(n);
                         Generacion.mostrarMatriz(matrizManual);
                         Generacion.registroCelulas(matrizManual);
                         Generacion.menuGeneraciones(matrizManual);
