@@ -18,4 +18,3 @@ public class Celula {
         this.viva = viva;
     }
 }
-

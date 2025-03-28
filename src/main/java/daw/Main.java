@@ -28,7 +28,7 @@ public class Main {
                     case 2 -> iniciarJuego();
                     case 3 -> {
                         JOptionPane.showMessageDialog(null, "Gracias! Hasta pronto!");
-                        break;  // Esto hará que se salga del bucle al seleccionar la opción 3
+                        break; // Esto hará que se salga del bucle al seleccionar la opción 3
                     }
                     default -> JOptionPane.showMessageDialog(null, "Opcion no valida");
                 }
@@ -56,10 +56,11 @@ public class Main {
                         2. Colocacion aleatoria
                         3. Volver al menu anterior
                         """);
-    
+
                 switch (opcion) {
                     case "1" -> {
-                        int n = Integer.parseInt(JOptionPane.showInputDialog("Ingrese el tamaño de la matriz (max 25): "));
+                        int n = Integer
+                                .parseInt(JOptionPane.showInputDialog("Ingrese el tamaño de la matriz (max 25): "));
                         if (n > 25) {
                             JOptionPane.showMessageDialog(null, "El tamaño de la matriz no puede ser mayor a 25");
                             break;
@@ -70,27 +71,25 @@ public class Main {
                         Generacion.menuGeneraciones(matrizManual);
                     }
                     case "2" -> {
-                        int n = Integer.parseInt(JOptionPane.showInputDialog("Ingrese el tamaño de la matriz (max 25): "));
+                        int n = Integer
+                                .parseInt(JOptionPane.showInputDialog("Ingrese el tamaño de la matriz (max 25): "));
                         if (n > 25) {
                             JOptionPane.showMessageDialog(null, "El tamaño de la matriz no puede ser mayor a 25");
                             break;
                         }
-                        int porcentaje = Integer.parseInt(JOptionPane.showInputDialog("Ingrese el porcentaje de celulas vivas (0-100): "));
+                        int porcentaje = Integer.parseInt(
+                                JOptionPane.showInputDialog("Ingrese el porcentaje de celulas vivas (0-100): "));
                         Celula[][] matrizAleatoria = Generacion.creaMatriz(n, porcentaje);
                         Generacion.mostrarMatriz(matrizAleatoria);
                         Generacion.registroCelulas(matrizAleatoria);
                         Generacion.menuGeneraciones(matrizAleatoria);
                     }
-                    case "3" -> continuar = false; 
+                    case "3" -> continuar = false;
                     default -> JOptionPane.showMessageDialog(null, "Opcion no valida");
                 }
             } while (!opcion.equals("3"));
         } catch (NumberFormatException nfe) {
             JOptionPane.showMessageDialog(null, "Dato introducido no correcto, vuelva a intentarlo.");
         }
-    }    
+    }
 }
-
-
-
-
