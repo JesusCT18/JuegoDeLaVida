@@ -119,10 +119,9 @@ public class Generacion {
                 // Si la celula esta viva y tiene 2 o 3 celulas vivas alrededor, permanece viva.
                 // Si la celula esta muerta y tiene exactamente 3 celulas vivas alrededor,
                 // revive.
-                // Si no cumple ninguna de las condiciones anteriores, la célula permanece
-                // muerta en la siguiente generación
-                // (esto se maneja al no establecerse en el 'else' de la condición de
-                // nacimiento).
+                // El algoritmo parte de si esta viva cuando el contador suma 2 o 3 sigue viva
+                // Else "cuando parte de estar muerta" y cuando el contador suma 3, revive
+                // Todas las demas circunstancias estan muertas 
                 if (celulas[i][j].isViva()) {
                     nuevaGeneracion[i][j] = new Celula(vivasAlrededor == 2 || vivasAlrededor == 3);
                 } else {
