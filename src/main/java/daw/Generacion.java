@@ -71,12 +71,14 @@ public class Generacion {
     // Recibe la matriz de células (ya sea creada inicialmente por 'creaMatriz' o
     // generada por 'nuevaGeneracion')
     public static void mostrarMatriz(Celula[][] matriz) {
+        System.out.println("--------------------------------------------------------");
         for (int i = 0; i < matriz.length; i++) {
             for (int j = 0; j < matriz[i].length; j++) {
                 System.out.print(matriz[i][j].isViva() ? "1 " : "0 ");
             }
             System.out.println();
         }
+        System.out.println("********************************************************");
     }
 
     // Este metodo 'contarCelulasVivas' es llamado por el metodo 'nuevaGeneracion'
