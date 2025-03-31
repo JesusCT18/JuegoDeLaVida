@@ -1,6 +1,7 @@
 package daw;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Random;
 
 import javax.swing.JOptionPane;
@@ -179,6 +180,28 @@ public class Generacion {
             }
         }
         return matriz;
+    }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + Arrays.deepHashCode(celulas);
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        Generacion other = (Generacion) obj;
+        if (!Arrays.deepEquals(celulas, other.celulas))
+            return false;
+        return true;
     }
 
     // Menu para avanzar generaciones y mostrar registros
