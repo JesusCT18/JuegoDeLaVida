@@ -19,6 +19,30 @@ public class Generacion {
         this.celulas = celulas;
     }
 
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + Arrays.deepHashCode(celulas);
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        Generacion other = (Generacion) obj;
+        if (!Arrays.deepEquals(celulas, other.celulas))
+            return false;
+        return true;
+    }
+
+
+
     // Este metodo 'creaMatriz' es llamado desde el punto de inicio del juego para
     // generar la primera generación de células.
     // La matriz retornada se utiliza como entrada para la creación de la primera
@@ -182,28 +206,7 @@ public class Generacion {
         return matriz;
     }
 
-    @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + Arrays.deepHashCode(celulas);
-        return result;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj)
-            return true;
-        if (obj == null)
-            return false;
-        if (getClass() != obj.getClass())
-            return false;
-        Generacion other = (Generacion) obj;
-        if (!Arrays.deepEquals(celulas, other.celulas))
-            return false;
-        return true;
-    }
-
+   
     // Menu para avanzar generaciones y mostrar registros
     // Este menu aparece una vez creada una generación inicial para avanzar o mostrar registros.
     public static void menuGeneraciones(Celula[][] celulas) {
@@ -252,4 +255,8 @@ public class Generacion {
             JOptionPane.showMessageDialog(null, "Dato no valido.");
         }
     }
+
+    
+
+
 }
