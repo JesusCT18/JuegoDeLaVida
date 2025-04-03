@@ -20,7 +20,8 @@ public class Main {
                           3. Salir
                         Elige una opcion:
                              """;
-
+                 
+                
                 opcion = Integer.parseInt(JOptionPane.showInputDialog(menu));
 
                 switch (opcion) {
@@ -56,7 +57,7 @@ public class Main {
                         2. Colocacion aleatoria
                         3. Volver al menu anterior
                         """);
-
+                     
                 switch (opcion) {
                     case "1" -> {
                         int n = Integer
@@ -90,6 +91,7 @@ public class Main {
             } while (!opcion.equals("3"));
         } catch (NumberFormatException nfe) {
             JOptionPane.showMessageDialog(null, "Dato introducido no correcto, vuelva a intentarlo.");
+        }catch (NullPointerException npe) {
         }
     }
 }
