@@ -7,18 +7,33 @@ import java.util.Random;
 import javax.swing.JOptionPane;
 
 public class Generacion {
-
+    /*
+     * INDICE
+     * 1. Atributos
+     * 2. Constructor
+     * 3. Equals y HashCode
+     * 4. Creacion de la matriz
+     * 5. Mostrar matriz
+     * 6. Contar celulas vivas
+     * 7. Nueva generacion
+     * 8. Registro de celulas
+     * 9. Colocacion manual de celulas
+     * 10. Menu de generaciones
+     * 
+     */
+    // 1. Atributos
     private Celula[][] celulas;
     private static ArrayList<String> registroGeneraciones = new ArrayList<>();
     private static int generacionCount = 1; // Contador para las generaciones
 
-    // Constructor
+    // 2. Constructor
     // Recibe una matriz de celulas. Representa el estado actual de la generación
     // del juego.
     public Generacion(Celula[][] celulas) {
         this.celulas = celulas;
     }
 
+    // 3. Equals y HashCode
     @Override
     public int hashCode() {
         final int prime = 31;
@@ -41,8 +56,7 @@ public class Generacion {
         return true;
     }
 
-
-
+    // 4. Creacion de la matriz
     // Este metodo 'creaMatriz' es llamado desde el punto de inicio del juego para
     // generar la primera generación de células.
     // La matriz retornada se utiliza como entrada para la creación de la primera
@@ -91,6 +105,7 @@ public class Generacion {
         return matriz;
     }
 
+    // 5. Mostrar matriz
     // Este metodo 'mostrarMatriz' se utiliza para visualizar el estado de la matriz
     // en cada generación.
     // Recibe la matriz de células (ya sea creada inicialmente por 'creaMatriz' o
@@ -106,6 +121,7 @@ public class Generacion {
         System.out.println("********************************************************");
     }
 
+    // 6. Contar celulas vivas
     // Este metodo 'contarCelulasVivas' es llamado por el metodo 'nuevaGeneracion'
     // para determinar el estado de cada célula en la siguiente generación.
     // Recibe la matriz actual de células y las coordenadas de una célula
@@ -126,6 +142,7 @@ public class Generacion {
         return contador;
     }
 
+    // 7. Nueva generacion
     // Este metodo 'nuevaGeneracion' es el corazón de la lógica del juego.
     // Recibe la matriz de la generación anterior (atributo 'celulas' de la
     // instancia actual de 'Generacion' o la matriz inicial).
@@ -148,7 +165,7 @@ public class Generacion {
                 // revive.
                 // El algoritmo parte de si esta viva cuando el contador suma 2 o 3 sigue viva
                 // Else "cuando parte de estar muerta" y cuando el contador suma 3, revive
-                // Todas las demas circunstancias estan muertas 
+                // Todas las demas circunstancias estan muertas
                 if (celulas[i][j].isViva()) {
                     nuevaGeneracion[i][j] = new Celula(vivasAlrededor == 2 || vivasAlrededor == 3);
                 } else {
@@ -159,7 +176,9 @@ public class Generacion {
         return nuevaGeneracion;
     }
 
-    // Muestra un mensaje al usuario a través de un cuadro de diálogo con la cantidad de células vivas y muertas en la generación actual.
+    // 8. Registro de celulas
+    // Muestra un mensaje al usuario a través de un cuadro de diálogo con la
+    // cantidad de células vivas y muertas en la generación actual.
     public static void registroCelulas(Celula[][] celulas) {
         int celulasVivas = 0;
         int celulasMuertas = 0;
@@ -183,9 +202,12 @@ public class Generacion {
         generacionCount++; // Incrementar el contador de generaciones
     }
 
+    // 9. Colocacion manual de celulas
     // Metodo para la colocacion manual de celulas
-    // Este metodo 'colocacionManual' se llama al inicio del juego si el usuario elige configurar la primera generación manualmente.
-    // Recibe el tamaño de la matriz y luego interactúa con el usuario para determinar el estado (viva o muerta) de cada célula.
+    // Este metodo 'colocacionManual' se llama al inicio del juego si el usuario
+    // elige configurar la primera generación manualmente.
+    // Recibe el tamaño de la matriz y luego interactúa con el usuario para
+    // determinar el estado (viva o muerta) de cada célula.
     public static Celula[][] colocacionManual(int n) {
         Celula[][] matriz = new Celula[n][n];
         for (int i = 0; i < n; i++) {
@@ -206,9 +228,10 @@ public class Generacion {
         return matriz;
     }
 
-   
+    // 10. Menu de generaciones
     // Menu para avanzar generaciones y mostrar registros
-    // Este menu aparece una vez creada una generación inicial para avanzar o mostrar registros.
+    // Este menu aparece una vez creada una generación inicial para avanzar o
+    // mostrar registros.
     public static void menuGeneraciones(Celula[][] celulas) {
         int opcion;
         try {
@@ -256,7 +279,6 @@ public class Generacion {
         }
     }
 
+
     
-
-
 }
