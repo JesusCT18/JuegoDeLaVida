@@ -240,7 +240,7 @@ public class Generacion {
                         MENU DE JUEGO - Avanzar Generacion y Mostrar Registros
                           1. Avanzar a la siguiente generacion
                           2. Mostrar registros de celulas vivas y muertas
-                          3. Guardar partida (no implementado)
+                          3. Guardar partida 
                           4. Salir
                         Elige una opcion:
                              """;
@@ -269,7 +269,17 @@ public class Generacion {
                             JOptionPane.showMessageDialog(null, sb.toString());
                         }
                     }
-                    case 3 -> JOptionPane.showMessageDialog(null, "Funcionalidad no implementada.");
+                    case 3 -> {
+                        // Pide nombre dle archivo
+                        String nombreFichero = JOptionPane.showInputDialog("Ingrese el nombre del archivo para guardar la partida: ");
+
+                        if (nombreFichero != null && !nombreFichero.isEmpty()){
+                            // Llama al metodo guardarPartida de la clase fichero
+                            Fichero.guardarPartida(celulas, nombreFichero, generacionCount, registroGeneraciones);
+                        } else {
+                            JOptionPane.showMessageDialog(null, "Gracias y Hasta pronto");
+                        }
+                    }
                     case 4 -> JOptionPane.showMessageDialog(null, "Gracias! Hasta pronto! ");
                     default -> JOptionPane.showMessageDialog(null, "Opcion no valida.");
                 }
