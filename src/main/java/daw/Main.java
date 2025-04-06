@@ -1,11 +1,19 @@
 package daw;
 
-// Clase Main
+import java.io.IOException;
+import java.util.ArrayList;
+
 import javax.swing.JOptionPane;
+
+import daw.Fichero;
 
 public class Main {
 
+    private static Fichero.PartidaCargada partidaCargada = null; // Inicializa la variable partidaCargada
+
+    
     public static void main(String[] args) {
+        
         mostrarMenu();
     }
 
@@ -20,8 +28,7 @@ public class Main {
                           3. Salir
                         Elige una opcion:
                              """;
-                 
-                
+
                 opcion = Integer.parseInt(JOptionPane.showInputDialog(menu));
 
                 switch (opcion) {
@@ -40,9 +47,31 @@ public class Main {
         }
     }
 
-    // Cargar partida (en mantenimiento)
+    // Cargar partida
     public static void cargarPartida() {
-        JOptionPane.showMessageDialog(null, "Opcion en mantenimiento, pronto disponible");
+        String nombreFichero = JOptionPane.showInputDialog("Introduce el nombre del fichero a cargar: ");
+        if (nombreFichero != null && !nombreFichero.isEmpty()) {
+            try {
+                Fichero.PartidaCargada partidaCargada = Fichero.cargarPartida(nombreFichero);
+                if (partidaCargada != null) {
+                    JOptionPane.showMessageDialog(null, "Partida cargada con éxito.");
+                    Celula[][] tableroCargado = partidaCargada.celulas();
+                    int generacionCargada = partidaCargada.generacion();
+                    ArrayList<String> registroCargado = partidaCargada.registro();
+                    Generacion.mostrarMatriz(tableroCargado);
+                    Generacion.menuGeneraciones(tableroCargado, generacionCargada, registroCargado);
+
+                } else {
+                    JOptionPane.showMessageDialog(null, "Error al cargar la partida.");
+                }
+            } catch (IOException e) {
+                JOptionPane.showMessageDialog(null, "Error al cargar el archivo: " + nombreFichero);
+            } catch (NullPointerException npe) {
+                JOptionPane.showMessageDialog(null, "No se ha seleccionado ningún archivo.");
+            }
+        } else {
+            JOptionPane.showMessageDialog(null, "No se ha introducido ningún nombre de archivo.");
+        }
     }
 
     // Iniciar juego
@@ -57,7 +86,7 @@ public class Main {
                         2. Colocacion aleatoria
                         3. Volver al menu anterior
                         """);
-                     
+
                 switch (opcion) {
                     case "1" -> {
                         int n = Integer
@@ -91,7 +120,7 @@ public class Main {
             } while (!opcion.equals("3"));
         } catch (NumberFormatException nfe) {
             JOptionPane.showMessageDialog(null, "Dato introducido no correcto, vuelva a intentarlo.");
-        }catch (NullPointerException npe) {
+        } catch (NullPointerException npe) {
         }
     }
 }

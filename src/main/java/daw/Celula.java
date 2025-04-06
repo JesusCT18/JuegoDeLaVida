@@ -1,6 +1,5 @@
 package daw;
 
-// Clase Celula
 public class Celula {
     private boolean viva; // Estado de la celula (viva o muerta)
 

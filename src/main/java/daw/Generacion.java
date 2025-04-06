@@ -240,7 +240,7 @@ public class Generacion {
                         MENU DE JUEGO - Avanzar Generacion y Mostrar Registros
                           1. Avanzar a la siguiente generacion
                           2. Mostrar registros de celulas vivas y muertas
-                          3. Guardar partida 
+                          3. Guardar partida
                           4. Salir
                         Elige una opcion:
                              """;
@@ -292,3 +292,4 @@ public class Generacion {
 
     
 }
+
