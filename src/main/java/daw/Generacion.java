@@ -25,6 +25,9 @@ public class Generacion {
     private Celula[][] celulas;
     private static ArrayList<String> registroGeneraciones = new ArrayList<>();
     private static int generacionCount = 1; // Contador para las generaciones
+    private static Celula[][] generacionAnterior = null;
+    private static ArrayList<Celula[][]> ultimasGeneraciones = new ArrayList<>();
+    private static final int NUM_GENERACIONES_COMPARAR = 3;
 
     // 2. Constructor
     // Recibe una matriz de celulas. Representa el estado actual de la generación
@@ -151,6 +154,7 @@ public class Generacion {
     // La matriz retornada por 'nuevaGeneracion' se convierte en la nueva matriz
     // 'celulas' para la siguiente iteración del juego.
     public Celula[][] nuevaGeneracion(Celula[][] celulas) {
+        generacionAnterior = copiaMatriz(celulas); // Guardar la generación anterior
         int n = celulas.length;
         Celula[][] nuevaGeneracion = new Celula[n][n];
 
@@ -161,8 +165,7 @@ public class Generacion {
                 // Aplica las reglas del Juego de la Vida para determinar el estado de la célula
                 // en la siguiente generación.
                 // Si la celula esta viva y tiene 2 o 3 celulas vivas alrededor, permanece viva.
-                // Si la celula esta muerta y tiene exactamente 3 celulas vivas alrededor,
-                // revive.
+                // Si la celula esta muerta y tiene exactamente 3 celulas vivas alrededor,revive.
                 // El algoritmo parte de si esta viva cuando el contador suma 2 o 3 sigue viva
                 // Else "cuando parte de estar muerta" y cuando el contador suma 3, revive
                 // Todas las demas circunstancias estan muertas
@@ -174,6 +177,18 @@ public class Generacion {
             }
         }
         return nuevaGeneracion;
+    }
+
+    private static Celula[][] copiaMatriz(Celula[][] matriz) {
+        int filas = matriz.length;
+        int columnas = matriz[0].length;
+        Celula[][] copia = new Celula[filas][columnas];
+        for (int i = 0; i < filas; i++) {
+            for (int j = 0; j < columnas; j++) {
+                copia[i][j] = new Celula(matriz[i][j].isViva());
+            }
+        }
+        return copia;
     }
 
     // 8. Registro de celulas
@@ -232,8 +247,9 @@ public class Generacion {
     // Menu para avanzar generaciones y mostrar registros
     // Este menu aparece una vez creada una generación inicial para avanzar o
     // mostrar registros.
-    public static void menuGeneraciones(Celula[][] celulas) {
+    public static void menuGeneraciones(Celula[][] celulas, int generacionActual,ArrayList<String> registroGeneraciones) {
         int opcion;
+        boolean juegoTerminado = false;
         try {
             do {
                 String menu = """
@@ -253,10 +269,30 @@ public class Generacion {
 
                 switch (opcion) {
                     case 1 -> {
-                        Generacion generacion = new Generacion(celulas);
-                        celulas = generacion.nuevaGeneracion(celulas);
-                        mostrarMatriz(celulas);
-                        registroCelulas(celulas);
+                        Celula[][] siguienteGeneracion = new Generacion(celulas).nuevaGeneracion(celulas);
+                        mostrarMatriz(siguienteGeneracion);
+                        registroCelulas(siguienteGeneracion);
+
+                        ultimasGeneraciones.add(copiaMatriz(celulas));
+
+                        if(ultimasGeneraciones.size() > NUM_GENERACIONES_COMPARAR) {
+                            ultimasGeneraciones.remove(0); // Mantener solo las últimas 3 generaciones
+                        }
+
+                        if(ultimasGeneraciones.size() == NUM_GENERACIONES_COMPARAR) {
+                            Celula[][]gen1 = ultimasGeneraciones.get(0);
+                            Celula[][]gen2 = ultimasGeneraciones.get(1);
+                            Celula[][]gen3 = ultimasGeneraciones.get(2);
+                            if(compararMatrices(gen1, gen2) && compararMatrices(gen2, gen3)) {
+                                JOptionPane.showMessageDialog(null, "Juego Terminado: Las ultimas 3 generaciones son iguales.");
+                                juegoTerminado = true;
+                                break;
+                            } 
+                        }
+
+                        celulas = siguienteGeneracion; // Actualizar la matriz de células
+                        generacionActual++;
+
                     }
                     case 2 -> {
                         if (registroGeneraciones.isEmpty()) {
@@ -271,9 +307,10 @@ public class Generacion {
                     }
                     case 3 -> {
                         // Pide nombre dle archivo
-                        String nombreFichero = JOptionPane.showInputDialog("Ingrese el nombre del archivo para guardar la partida: ");
+                        String nombreFichero = JOptionPane
+                                .showInputDialog("Ingrese el nombre del archivo para guardar la partida: ");
 
-                        if (nombreFichero != null && !nombreFichero.isEmpty()){
+                        if (nombreFichero != null && !nombreFichero.isEmpty()) {
                             // Llama al metodo guardarPartida de la clase fichero
                             Fichero.guardarPartida(celulas, nombreFichero, generacionCount, registroGeneraciones);
                         } else {
@@ -283,13 +320,10 @@ public class Generacion {
                     case 4 -> JOptionPane.showMessageDialog(null, "Gracias! Hasta pronto! ");
                     default -> JOptionPane.showMessageDialog(null, "Opcion no valida.");
                 }
-            } while (opcion != 4);
+            } while (opcion != 4 && !juegoTerminado);
         } catch (NumberFormatException nfe) {
             JOptionPane.showMessageDialog(null, "Dato no valido.");
         }
     }
 
-
-    
 }
-
