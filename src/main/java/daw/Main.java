@@ -100,12 +100,11 @@ public class Main {
                         if (matrizManual != null) {
                             Generacion.mostrarMatriz(matrizManual);
                             Generacion.registroCelulas(matrizManual);
-                            // Create empty ArrayList for registro
-                            ArrayList<String> registro = new ArrayList<>();
-                            // Start with generation 1
-                            int generacionActual = 1;
+                            //Cambio para controlar el registro
+                            ArrayList<String> registro = Generacion.getRegistroGeneraciones(); 
+                            Generacion.registroCelulas(matrizManual);
                             try {
-                                Generacion.menuGeneraciones(matrizManual, generacionActual, registro);
+                                Generacion.menuGeneraciones(matrizManual, Generacion.getGeneracionCount(), registro);
                             } catch (IOException e) {
                                 JOptionPane.showMessageDialog(null, "Error al guardar partida: " + e.getMessage());
                             }
@@ -122,12 +121,12 @@ public class Main {
                         if (matrizAleatoria != null) {
                             Generacion.mostrarMatriz(matrizAleatoria);
                             Generacion.registroCelulas(matrizAleatoria);
-                            // Create empty ArrayList for registro
-                            ArrayList<String> registro = new ArrayList<>();
-                            // Start with generation 1
-                            int generacionActual = 1;
+                            
+                            //Refactorizacion para controlar registro generaciones
+                            ArrayList<String> registro = Generacion.getRegistroGeneraciones();
+                            Generacion.registroCelulas(matrizAleatoria);
                             try {
-                                Generacion.menuGeneraciones(matrizAleatoria, generacionActual, registro);
+                                Generacion.menuGeneraciones(matrizAleatoria, Generacion.getGeneracionCount(), registro);
                             } catch (IOException e) {
                                 JOptionPane.showMessageDialog(null, "Error al guardar partida: " + e.getMessage());
                             }

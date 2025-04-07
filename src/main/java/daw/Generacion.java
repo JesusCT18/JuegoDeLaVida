@@ -296,11 +296,13 @@ public class Generacion {
 
                     }
                     case 2 -> {
-                        if (registroGeneraciones.isEmpty()) {
+                        
+                        //Cambiamos registro por getRegistro
+                        if (getRegistroGeneraciones().isEmpty()) {
                             JOptionPane.showMessageDialog(null, "Aun no se ha avanzado ninguna generacion");
                         } else {
                             StringBuilder sb = new StringBuilder();
-                            for (String registro : registroGeneraciones) {
+                            for (String registro : Generacion.getRegistroGeneraciones()) {//aqui tambien cambiamos a getRegistro
                                 sb.append(registro).append("\n");
                             }
                             JOptionPane.showMessageDialog(null, sb.toString());
@@ -313,7 +315,7 @@ public class Generacion {
 
                         if (nombreFichero != null && !nombreFichero.isEmpty()) {
                             // Llama al metodo guardarPartida de la clase fichero
-                            Fichero.guardarPartida(celulas, nombreFichero, generacionCount, registroGeneraciones);
+                            Fichero.guardarPartida(celulas, nombreFichero, generacionCount, getRegistroGeneraciones()); //refavtorizado a getRegistro
                         } else {
                             JOptionPane.showMessageDialog(null, "Gracias y Hasta pronto");
                         }
@@ -347,5 +349,12 @@ public class Generacion {
         return true;
     }
     
+    //Creamos getters de registro generaciones para refactorizacion del control en el main
+    public static ArrayList<String> getRegistroGeneraciones(){
+        return registroGeneraciones;
+    }
     
+    public static int getGeneracionCount(){
+        return generacionCount;
+    }
 }

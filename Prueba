@@ -1,5 +1,7 @@
-Filas: 2, Columnas: 2
-0,0
-0,0
-generacion: 24
-registro: 
+Filas: 4, Columnas: 4
+0,1,0,1
+0,0,0,1
+0,0,1,0
+0,0,0,0
+generacion: 6
+registro: Generacion 1: Vivas: 5, Muertas: 11;Generacion 2: Vivas: 5, Muertas: 11;Generacion 3: Vivas: 6, Muertas: 10;Generacion 4: Vivas: 4, Muertas: 12;Generacion 5: Vivas: 4, Muertas: 12
