@@ -54,13 +54,27 @@ public class Main {
         String nombreFichero = JOptionPane.showInputDialog("Introduce el nombre del fichero a cargar: ");
         if (nombreFichero != null && !nombreFichero.isEmpty()) {
             try {
-                Fichero.PartidaCargada partidaCargada = Fichero.cargarPartida(nombreFichero);
+                partidaCargada = Fichero.cargarPartida(nombreFichero); //usamos variable de clase partidaCargada 
                 if (partidaCargada != null) {
                     JOptionPane.showMessageDialog(null, "Partida cargada con éxito.");
                     Celula[][] tableroCargado = partidaCargada.celulas();
                     int generacionCargada = partidaCargada.generacion();
                     ArrayList<String> registroCargado = partidaCargada.registro();
+                    //metodos para intentar controlar un registro por partida 
+                    //en el codigo original se acumulaban las partidas seguidas.
+                    Generacion.resetRegistro();
+                    Generacion.setGeneracionCount(generacionCargada + 1);
+                    Generacion.setRegistroGeneraciones(registroCargado);
+
+                    //enseñar por pantalla el registro cargado, no solo la matriz.
                     Generacion.mostrarMatriz(tableroCargado);
+
+                    StringBuilder sb = new StringBuilder("Registro de partida cargada:\n");
+                    for (String registro : registroCargado) {
+                        sb.append(registro).append("\n");
+                    }
+                    JOptionPane.showMessageDialog(null, sb.toString());
+                    //continuar con el juego
                     Generacion.menuGeneraciones(tableroCargado, generacionCargada, registroCargado);
 
                 } else {
@@ -78,8 +92,10 @@ public class Main {
 
     // Iniciar juego
     public static void iniciarJuego() {
+        Generacion.resetRegistro();//evita que sume generaciones de otras partidas 
         String opcion = "";
         boolean continuar = true;
+        partidaCargada=null; //nos aseguramos que no haya partida cargada activa
 
         try {
             do {
@@ -91,6 +107,7 @@ public class Main {
 
                 switch (opcion) {
                     case "1" -> {
+                        Generacion.resetRegistro();//controlamos que no se acumulen registros de otras partidas
                         int n = Integer.parseInt(JOptionPane.showInputDialog("Ingrese el tamaño de la matriz (max 25): "));
                         if (n > 25) {
                             JOptionPane.showMessageDialog(null, "El tamaño de la matriz no puede ser mayor a 25");
@@ -99,10 +116,9 @@ public class Main {
                         Celula[][] matrizManual = Generacion.colocacionManual(n);
                         if (matrizManual != null) {
                             Generacion.mostrarMatriz(matrizManual);
+                            // Solo registrar una vez
                             Generacion.registroCelulas(matrizManual);
-                            //Cambio para controlar el registro
-                            ArrayList<String> registro = Generacion.getRegistroGeneraciones(); 
-                            Generacion.registroCelulas(matrizManual);
+                            ArrayList<String> registro = Generacion.getRegistroGeneraciones();
                             try {
                                 Generacion.menuGeneraciones(matrizManual, Generacion.getGeneracionCount(), registro);
                             } catch (IOException e) {
@@ -111,6 +127,7 @@ public class Main {
                         }
                     }
                     case "2" -> {
+                        Generacion.resetRegistro();//controlamos que no se acumulen registros de otras partidas
                         int n = Integer.parseInt(JOptionPane.showInputDialog("Ingrese el tamaño de la matriz (max 25): "));
                         if (n > 25) {
                             JOptionPane.showMessageDialog(null, "El tamaño de la matriz no puede ser mayor a 25");
@@ -120,11 +137,9 @@ public class Main {
                         Celula[][] matrizAleatoria = Generacion.creaMatriz(n, porcentaje);
                         if (matrizAleatoria != null) {
                             Generacion.mostrarMatriz(matrizAleatoria);
+                            // Solo registrar una vez
                             Generacion.registroCelulas(matrizAleatoria);
-                            
-                            //Refactorizacion para controlar registro generaciones
                             ArrayList<String> registro = Generacion.getRegistroGeneraciones();
-                            Generacion.registroCelulas(matrizAleatoria);
                             try {
                                 Generacion.menuGeneraciones(matrizAleatoria, Generacion.getGeneracionCount(), registro);
                             } catch (IOException e) {

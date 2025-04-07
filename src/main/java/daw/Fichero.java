@@ -13,7 +13,7 @@ public class Fichero {
     // Metodo para guardar la partida en un archivo
     public static void guardarPartida(Celula[][] celulas, String nombreFichero, int contadorGeneraciones,
             ArrayList<String> registroGeneraciones) throws IOException {
-            String tmp;
+        String tmp;
 
         // Dimensiones de la matriz
         int n = celulas.length; // Numero de filas
@@ -21,98 +21,101 @@ public class Fichero {
 
         // Try para abrir el archivo para escribir
         try (BufferedWriter flujo = new BufferedWriter(new FileWriter(nombreFichero))) {
-            // Escribir la matriz actual
-            flujo.write("Filas: " + n + ", Columnas: " + m);
+            // 1ª fila: tamaño de la matriz (solo un número para matriz cuadrada)
+            flujo.write(String.valueOf(n));
             flujo.newLine();
 
-            // Escribir la matriz de celulas en el archivo
+            // 2ª fila: número de generación
+            flujo.write(String.valueOf(contadorGeneraciones - 1)); // Restamos 1 porque contadorGeneraciones ya está incrementado para la siguiente
+            flujo.newLine();
+
+            // 3ª fila: matriz en el estado actual (con espacios entre valores)
             for (int i = 0; i < n; i++) {
-                for (int j = 0; j < m; j++) {
-                    tmp = (celulas[i][j].isViva() ? "1" : "0"); // 1 para viva, 0 para muerta
-                    flujo.write(tmp + (j < m - 1 ? "," : ""));
+                for (int j = 0; j < n; j++) {
+                    flujo.write((celulas[i][j].isViva() ? "1" : "0") + " ");
                 }
-                flujo.newLine(); // Nueva linea despues de cada fila
+                flujo.newLine(); // Nueva línea después de cada fila de la matriz
             }
-            //Cambio para ajustar metodo con cargarPartida
-            flujo.write("generacion: " + contadorGeneraciones);
-            flujo.newLine();
+            // 4ª fila: número de células vivas en cada generación
+            StringBuilder vivaPorGeneracion = new StringBuilder();
+            for (String registro : registroGeneraciones) {
+                // Extraer el número de células vivas de cada registro
+                // Formato del registro: "Generacion X: Vivas: Y, Muertas: Z"
+                int startIndex = registro.indexOf("Vivas: ") + 7;
+                int endIndex = registro.indexOf(",", startIndex);
+                if (startIndex > 0 && endIndex > startIndex) {
+                    String vivasStr = registro.substring(startIndex, endIndex).trim();
+                    vivaPorGeneracion.append(vivasStr).append(" ");
+                }
+            }
+            flujo.write(vivaPorGeneracion.toString().trim());
 
-            // Escribir el registro de generaciones anteriores
-            flujo.write("registro: ");
-            for (int i = 0; i < registroGeneraciones.size(); i++) {
-                flujo.write(registroGeneraciones.get(i) + (i < registroGeneraciones.size() - 1 ? ";" : ""));
-            }
-            flujo.newLine(); // Nueva linea al final del registro
             flujo.flush(); // Forzar el guardado
             System.out.println("Fichero " + nombreFichero + " creado correctamente");
         }
     }
 
-    // Metodo para cargar la partida desde un archivo    // Metodo para cargar la partida desde un archivo
     public static PartidaCargada cargarPartida(String nombreFichero) throws IOException {
         try (BufferedReader reader = new BufferedReader(new FileReader(nombreFichero))) {
-            String dimensiones = reader.readLine(); // Lee la primera linea con las dimensiones
-            if (dimensiones == null || !dimensiones.startsWith("Filas: ") || !dimensiones.contains(" Columnas: ")) {
-                System.out.println("Formato incorrecto");
-                return null; // Retorna null si el formato es incorrecto
-            }
-            String[] partesDimensiones = dimensiones.substring("Filas: ".length()).split(", Columnas: ");
-            int filas = Integer.parseInt(partesDimensiones[0].trim());
-            int columnas = Integer.parseInt(partesDimensiones[1].trim());
-            Celula[][] celulasCargadas = new Celula[filas][columnas]; // Crea la matriz de celulas
-
-            // Leer el estado de las células
-            for (int i = 0; i < filas; i++) {
-                String lineaCelulas = reader.readLine(); // Lee la siguiente linea
-                if (lineaCelulas == null) {
-                    System.out.println("Error al leer el estado de las celulas");
-                    return null; // Retorna null si hay un error
-                }
-                String[] estados = lineaCelulas.split(","); // Separa los estados por comas
-                if (estados.length != columnas) {
-                    System.out.println("Error en el formato de la matriz de celulas");
-                    return null; // Retorna null si el formato es incorrecto
-                }
-
-                for (int j = 0; j < columnas; j++) {
-                    celulasCargadas[i][j] = new Celula(estados[j].trim().equals("1")); // Crea la celula con el estado
-                    // correspondiente
-
-                }
-
+            // 1ª línea: tamaño de la matriz
+            String tamanoStr = reader.readLine();
+            if (tamanoStr == null) {
+                System.out.println("Archivo vacío o formato incorrecto");
+                return null;
             }
 
-            // Leer el nº de generacion
-            String lineaGeneracion = reader.readLine(); // Lee la siguiente linea
-            int generacionCargada = 1; // Valor por defecto
-            if (lineaGeneracion != null && lineaGeneracion.startsWith("generacion: ")) {
-                generacionCargada = Integer.parseInt(lineaGeneracion.substring("generacion: ".length()).trim());
-            } else {
-                System.out.println(
-                        "Advertencia: número de generación no encontrado, se usará el valor predeterminado (1).");
+            int tamano = Integer.parseInt(tamanoStr.trim());
+
+            // 2ª línea: número de generación
+            String generacionStr = reader.readLine();
+            if (generacionStr == null) {
+                System.out.println("Formato incorrecto - falta número de generación");
+                return null;
             }
 
-            // Leer el registro de generaciones anteriores
-            String lineaRegistro = reader.readLine(); // Lee la siguiente linea
-            ArrayList<String> registroCargado = new ArrayList<>(); // Crea la lista para el registro
-            if (lineaRegistro != null && lineaRegistro.startsWith("registro: ")) {
-                String registros = lineaRegistro.substring("registro: ".length()).trim(); // Extrae el registro
-                if (!registros.isEmpty()) {
-                    registroCargado.addAll(Arrays.asList(registros.split(";")));
+            int generacionCargada = Integer.parseInt(generacionStr.trim());
+
+            // 3ª línea en adelante: matriz
+            Celula[][] celulasCargadas = new Celula[tamano][tamano];
+            for (int i = 0; i < tamano; i++) {
+                String lineaMatriz = reader.readLine();
+                if (lineaMatriz == null) {
+                    System.out.println("Formato incorrecto - matriz incompleta");
+                    return null;
+                }
+
+                String[] valores = lineaMatriz.trim().split(" ");
+                if (valores.length < tamano) {
+                    System.out.println("Formato incorrecto - fila " + i + " incompleta");
+                    return null;
+                }
+
+                for (int j = 0; j < tamano; j++) {
+                    celulasCargadas[i][j] = new Celula(valores[j].equals("1"));
                 }
             }
 
-            return new PartidaCargada(celulasCargadas, generacionCargada, registroCargado); // Retorna la partida
-            // cargada
+            // Última línea: células vivas por generación
+            String vivasPorGeneracion = reader.readLine();
+            ArrayList<String> registroCargado = new ArrayList<>();
 
+            if (vivasPorGeneracion != null && !vivasPorGeneracion.trim().isEmpty()) {
+                String[] vivasArray = vivasPorGeneracion.trim().split(" ");
+                for (int i = 0; i < vivasArray.length; i++) {
+                    int numVivas = Integer.parseInt(vivasArray[i]);
+                    int numMuertas = tamano * tamano - numVivas;
+                    registroCargado.add("Generacion " + (i + 1) + ": Vivas: " + numVivas + ", Muertas: " + numMuertas);
+                }
+            }
+
+            return new PartidaCargada(celulasCargadas, generacionCargada, registroCargado);
         } catch (NumberFormatException nfe) {
-            System.out.println("Formato incorrecto en el archivo: ");
+            System.out.println("Formato incorrecto en el archivo");
             return null;
         } catch (IOException e) {
             System.out.println("Error al cargar el archivo: " + nombreFichero);
-            throw e; // Retorna null si hay un error
+            throw e;
         }
-
     }
 
     // Clase para almacenar la partida cargada
