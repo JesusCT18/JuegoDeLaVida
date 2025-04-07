@@ -1,5 +1,6 @@
 package daw;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Random;
@@ -19,7 +20,7 @@ public class Generacion {
      * 8. Registro de celulas
      * 9. Colocacion manual de celulas
      * 10. Menu de generaciones
-     * 
+     * 11. Comparar matrices
      */
     // 1. Atributos
     private Celula[][] celulas;
@@ -247,7 +248,7 @@ public class Generacion {
     // Menu para avanzar generaciones y mostrar registros
     // Este menu aparece una vez creada una generación inicial para avanzar o
     // mostrar registros.
-    public static void menuGeneraciones(Celula[][] celulas, int generacionActual,ArrayList<String> registroGeneraciones) {
+    public static void menuGeneraciones(Celula[][] celulas, int generacionActual,ArrayList<String> registroGeneraciones) throws IOException {
         int opcion;
         boolean juegoTerminado = false;
         try {
@@ -326,4 +327,25 @@ public class Generacion {
         }
     }
 
+    //11. Comparar Matrices
+    public static boolean compararMatrices(Celula[][]matriz1, Celula[][]matriz2){
+        if(matriz1.length != matriz2.length){
+            return false;
+        }
+        
+        for (int i = 0; i < matriz1.length; i++) {
+            if(matriz1[i].length != matriz2[i].length){
+                return false;
+            }
+            
+            for (int j = 0; j < matriz1[i].length; j++) {
+                if(matriz1[i][j].isViva() != matriz2[i][j].isViva()){
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+    
+    
 }

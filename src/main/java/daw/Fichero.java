@@ -12,8 +12,8 @@ public class Fichero {
 
     // Metodo para guardar la partida en un archivo
     public static void guardarPartida(Celula[][] celulas, String nombreFichero, int contadorGeneraciones,
-            ArrayList<String> registroGeneraciones) {
-        String tmp;
+            ArrayList<String> registroGeneraciones) throws IOException {
+            String tmp;
 
         // Dimensiones de la matriz
         int n = celulas.length; // Numero de filas
@@ -40,48 +40,15 @@ public class Fichero {
             // Escribir el registro de generaciones anteriores
             flujo.write("registro: ");
             for (int i = 0; i < registroGeneraciones.size(); i++) {
-                
                 flujo.write(registroGeneraciones.get(i) + (i < registroGeneraciones.size() - 1 ? ";" : ""));
             }
             flujo.newLine(); // Nueva linea al final del registro
             flujo.flush(); // Forzar el guardado
             System.out.println("Fichero " + nombreFichero + " creado correctamente");
-/*
-            // Obtener cantidad de celulas vivas en la generacion
-            int celulasVivas = 0;
-            for (int i = 0; i < n; i++) {
-                for (int j = 0; j < m; j++) {
-                    if (celulas[i][j].isViva()) {
-                        celulasVivas++;
-                    }
-                }
-            }
-
-            // Escribir el numero de celulas vivas
-            flujo.write("celulas vivas: " + celulasVivas);
-            flujo.newLine(); // salto de linea
-
-            // Escribir los numeros de las celulas vivas de las generaciones anteriores
-            flujo.write("Generaciones anteriores: ");
-            for (int i = registroGeneraciones.size() - 1; i >= 0; i--) {
-                String registro = registroGeneraciones.get(i);
-                // Busca el numero de vivas directamente
-                int indiceVivas = registro.lastIndexOf(" "); // Encuentra el ultimo espacio
-                if (indiceVivas != -1) {
-                    String numVivas = registro.substring(indiceVivas + 1); // Extrae el numero
-                    flujo.write(numVivas + (i > 0 ? ", " : ""));
-                }
-            }
-
-            // Forzar el guardado
-            flujo.flush();
-            System.out.println("Fichero " + nombreFichero + " creado correctamente");
-
-        } catch (Exception e) {
-            System.out.println("Error al guardar el archivo");
-        }*/
+        }
     }
-    // Metodo para cargar la partida desde un archivo
+
+    // Metodo para cargar la partida desde un archivo    // Metodo para cargar la partida desde un archivo
     public static PartidaCargada cargarPartida(String nombreFichero) throws IOException {
         try (BufferedReader reader = new BufferedReader(new FileReader(nombreFichero))) {
             String dimensiones = reader.readLine(); // Lee la primera linea con las dimensiones
@@ -109,7 +76,7 @@ public class Fichero {
 
                 for (int j = 0; j < columnas; j++) {
                     celulasCargadas[i][j] = new Celula(estados[j].trim().equals("1")); // Crea la celula con el estado
-                                                                                       // correspondiente
+                    // correspondiente
 
                 }
 
@@ -136,7 +103,7 @@ public class Fichero {
             }
 
             return new PartidaCargada(celulasCargadas, generacionCargada, registroCargado); // Retorna la partida
-                                                                                            // cargada
+            // cargada
 
         } catch (NumberFormatException nfe) {
             System.out.println("Formato incorrecto en el archivo: ");
@@ -150,6 +117,7 @@ public class Fichero {
 
     // Clase para almacenar la partida cargada
     public record PartidaCargada(Celula[][] celulas, int generacion, ArrayList<String> registro) {
+
     }
 
 }

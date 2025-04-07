@@ -11,9 +11,8 @@ public class Main {
 
     private static Fichero.PartidaCargada partidaCargada = null; // Inicializa la variable partidaCargada
 
-    
     public static void main(String[] args) {
-        
+
         mostrarMenu();
     }
 
@@ -32,13 +31,16 @@ public class Main {
                 opcion = Integer.parseInt(JOptionPane.showInputDialog(menu));
 
                 switch (opcion) {
-                    case 1 -> cargarPartida();
-                    case 2 -> iniciarJuego();
+                    case 1 ->
+                        cargarPartida();
+                    case 2 ->
+                        iniciarJuego();
                     case 3 -> {
                         JOptionPane.showMessageDialog(null, "Gracias! Hasta pronto!");
                         break; // Esto hará que se salga del bucle al seleccionar la opción 3
                     }
-                    default -> JOptionPane.showMessageDialog(null, "Opcion no valida");
+                    default ->
+                        JOptionPane.showMessageDialog(null, "Opcion no valida");
                 }
 
             } while (opcion != 3); // Este bucle ahora terminará correctamente al elegir opción 3
@@ -89,33 +91,52 @@ public class Main {
 
                 switch (opcion) {
                     case "1" -> {
-                        int n = Integer
-                                .parseInt(JOptionPane.showInputDialog("Ingrese el tamaño de la matriz (max 25): "));
+                        int n = Integer.parseInt(JOptionPane.showInputDialog("Ingrese el tamaño de la matriz (max 25): "));
                         if (n > 25) {
                             JOptionPane.showMessageDialog(null, "El tamaño de la matriz no puede ser mayor a 25");
                             break;
                         }
                         Celula[][] matrizManual = Generacion.colocacionManual(n);
-                        Generacion.mostrarMatriz(matrizManual);
-                        Generacion.registroCelulas(matrizManual);
-                        Generacion.menuGeneraciones(matrizManual);
+                        if (matrizManual != null) {
+                            Generacion.mostrarMatriz(matrizManual);
+                            Generacion.registroCelulas(matrizManual);
+                            // Create empty ArrayList for registro
+                            ArrayList<String> registro = new ArrayList<>();
+                            // Start with generation 1
+                            int generacionActual = 1;
+                            try {
+                                Generacion.menuGeneraciones(matrizManual, generacionActual, registro);
+                            } catch (IOException e) {
+                                JOptionPane.showMessageDialog(null, "Error al guardar partida: " + e.getMessage());
+                            }
+                        }
                     }
                     case "2" -> {
-                        int n = Integer
-                                .parseInt(JOptionPane.showInputDialog("Ingrese el tamaño de la matriz (max 25): "));
+                        int n = Integer.parseInt(JOptionPane.showInputDialog("Ingrese el tamaño de la matriz (max 25): "));
                         if (n > 25) {
                             JOptionPane.showMessageDialog(null, "El tamaño de la matriz no puede ser mayor a 25");
                             break;
                         }
-                        int porcentaje = Integer.parseInt(
-                                JOptionPane.showInputDialog("Ingrese el porcentaje de celulas vivas (0-100): "));
+                        int porcentaje = Integer.parseInt(JOptionPane.showInputDialog("Ingrese el porcentaje de celulas vivas (0-100): "));
                         Celula[][] matrizAleatoria = Generacion.creaMatriz(n, porcentaje);
-                        Generacion.mostrarMatriz(matrizAleatoria);
-                        Generacion.registroCelulas(matrizAleatoria);
-                        Generacion.menuGeneraciones(matrizAleatoria);
+                        if (matrizAleatoria != null) {
+                            Generacion.mostrarMatriz(matrizAleatoria);
+                            Generacion.registroCelulas(matrizAleatoria);
+                            // Create empty ArrayList for registro
+                            ArrayList<String> registro = new ArrayList<>();
+                            // Start with generation 1
+                            int generacionActual = 1;
+                            try {
+                                Generacion.menuGeneraciones(matrizAleatoria, generacionActual, registro);
+                            } catch (IOException e) {
+                                JOptionPane.showMessageDialog(null, "Error al guardar partida: " + e.getMessage());
+                            }
+                        }
                     }
-                    case "3" -> continuar = false;
-                    default -> JOptionPane.showMessageDialog(null, "Opcion no valida");
+                    case "3" ->
+                        continuar = false;
+                    default ->
+                        JOptionPane.showMessageDialog(null, "Opcion no valida");
                 }
             } while (!opcion.equals("3"));
         } catch (NumberFormatException nfe) {
