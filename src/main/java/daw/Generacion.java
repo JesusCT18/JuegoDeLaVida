@@ -24,7 +24,7 @@ public class Generacion {
      * 11. Comparar matrices
      */
     // 1. Atributos
-    private Celula[][] celulas;
+    private Celula[][] celulas; 
     private static ArrayList<String> registroGeneraciones = new ArrayList<>();
     private static int generacionCount = 1; // Contador para las generaciones
     private static Celula[][] generacionAnterior = null;
@@ -187,12 +187,16 @@ public class Generacion {
         return nuevaGeneracion;
     }
 
+    // Metodo para copiar una matriz de celulas
     private static Celula[][] copiaMatriz(Celula[][] matriz) {
         int filas = matriz.length;
         int columnas = matriz[0].length;
         Celula[][] copia = new Celula[filas][columnas];
         for (int i = 0; i < filas; i++) {
             for (int j = 0; j < columnas; j++) {
+                // Copia el estado de la celula de la matriz original a la nueva matriz.
+                // Se crea una nueva instancia de la clase Celula en la matriz copiada,
+                // con el mismo estado (viva o muerta) de la celula original.
                 copia[i][j] = new Celula(matriz[i][j].isViva());
             }
         }
